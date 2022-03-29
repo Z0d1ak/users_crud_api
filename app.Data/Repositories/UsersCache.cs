@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 using app.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
@@ -122,7 +123,7 @@ namespace app.Data.Repositories
                 {
                     using (var context = factory.CreateDbContext(Array.Empty<string>()))
                     {
-                        usersCache = await context.Users.ToDictionaryAsync(x => x.Id, x => x);
+                        usersCache = await context.Users.ToDictionaryAsync(x => x.Id, x => x).ConfigureAwait(false);
                     }
                 }
                 finally
