@@ -1,0 +1,13 @@
+﻿app/.vs
+app/bin
+app/obj
+app.Contracts/bin
+app.Contracts/obj
+app.Data/bin
+app.Data/obj/Debug
+app.Services/bin
+app.Services/obj
+app.Shared/bin
+app.Shared/obj
+ConsoleClient/obj
+ConsoleClient/bin
