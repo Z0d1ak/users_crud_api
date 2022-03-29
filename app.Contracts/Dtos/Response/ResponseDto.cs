@@ -12,16 +12,16 @@ namespace app.Contracts.Dtos
     public class ResponseDto
     {
         [XmlAttribute(AttributeName = "ErrorId", Namespace = "")]
-        [JsonIgnore]
+        [JsonPropertyName("ErrorId")]
         [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
-        public int ErrorCodeIdXml
+        public int ErrorCodeId
         {
             get => (int)ErrorCode;
             set => ErrorCode = (ErrorCodeDto)value;
         }
 
         [XmlIgnore]
-        [JsonPropertyName("ErrorId")]
+        [JsonIgnore]
         public ErrorCodeDto ErrorCode { get; set; }
 
         [XmlAttribute(AttributeName = "Success", Namespace = "")]
