@@ -20,12 +20,17 @@ namespace app.Data.Repositories
             this.factory = factory;
         }
 
-        public void Start()
+        public async Task StartAsync()
         {
+            using (var context = factory.CreateDbContext(Array.Empty<string>()))
+            {
+                usersCache = await context.Users.AsNoTracking().ToDictionaryAsync(x => x.Id, x => x);
+            }
+
             timer = new System.Threading.Timer(
                 e => UpdateCache(),
                 null,
-                TimeSpan.Zero,
+                TimeSpan.FromMinutes(10),
                 TimeSpan.FromMinutes(10));
         }
 
@@ -116,39 +121,23 @@ namespace app.Data.Repositories
         private async void UpdateCache()
         {
             Dictionary<int, User> users = null;
-            if (usersCache is null)
+            
+            using (var context = factory.CreateDbContext(Array.Empty<string>()))
             {
-                rwl.EnterWriteLock();
-                try
-                {
-                    using (var context = factory.CreateDbContext(Array.Empty<string>()))
-                    {
-                        usersCache = await context.Users.ToDictionaryAsync(x => x.Id, x => x).ConfigureAwait(false);
-                    }
-                }
-                finally
-                {
-                    rwl.ExitWriteLock();
-                }
+                users = await context.Users.ToDictionaryAsync(x => x.Id, x => x);
             }
-            else
+
+            rwl.EnterWriteLock();
+
+            try
             {
-                using (var context = factory.CreateDbContext(Array.Empty<string>()))
-                {
-                    users = await context.Users.ToDictionaryAsync(x => x.Id, x => x);
-                }
-
-                rwl.EnterWriteLock();
-
-                try
-                {
-                    usersCache = users;
-                }
-                finally
-                {
-                    rwl.ExitWriteLock();
-                }
+                usersCache = users;
             }
+            finally
+            {
+                rwl.ExitWriteLock();
+            }
+            
         }
     }
 }

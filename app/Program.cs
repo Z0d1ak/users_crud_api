@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using app.Data.Repositories;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,11 +8,11 @@ namespace app
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var host = CreateHostBuilder(args).Build();
             var usersCache = host.Services.GetRequiredService<UsersCache>();
-            usersCache.Start();
+            await usersCache.StartAsync();
             host.Run();
         }
 
